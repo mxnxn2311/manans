@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom right, #ffe4e1, #ffb6c1);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'pacifico', cursive;
+            color: #ff5e78;
+            margin-bottom: 10px;
+        }
+
+        p, h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #ff5e78;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            background-color: #ff7590;
+        }
+
+        #noButton {
+            background-color: #666;
+        }
+
+        #surpriseImage {
+            display: block;
+            opacity: 0;
+            transition: opacity 1s ease, transform 1s ease;
+            width: 200px;
+            height: auto;
+            margin-top: 20px;
+            /* Start position above the screen */
+        }
+
+        #mainContent, #finalPage {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+            backdrop-filter: blur(10px); /* Frosted glass blur */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border for extra glassy look */
+            border-radius: 16px; /* Rounded corners */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Soft shadow */
+            padding: 20px; /* Inner padding */
+            text-align: center; /* Center content */
+            width: 300px; /* Set width */
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.1);
+            }
+            50% {
+                transform: scale(1);
+            }
+            75% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .heartbeat {
+            animation: heartbeat 1s ease-in-out infinite;
+        }
+    </style>
+    <script>
+        function showMainContent() {
+            document.getElementById("entryPage").style.display = "none"; // Hide entry page
+            document.getElementById("mainContent").style.display = "flex"; // Show main content
+        }
+
+        function imageshow() {
+            const surpriseImage = document.getElementById("surpriseImage");
+            surpriseImage.style.opacity = "1"; // Fade in the image
+            surpriseImage.style.transform = "translateX(20px)"; // Animate the image from top to below the "No" button
+        }
+
+        function imagehide() {
+            const surpriseImage = document.getElementById("surpriseImage");
+            surpriseImage.style.opacity = "0"; // Fade out the image
+            surpriseImage.style.transform = "translateY(-100vh)"; // Reset position above the screen
+        }
+
+        function redirectToYes(button) {
+            const surpriseImage = document.getElementById("surpriseImage");
+
+            if (button.id === "noButton") {
+                imageshow(); // Show and animate the image
+                setTimeout(() => {
+                    imagehide(); // Hide the image after 2 seconds
+                }, 2000);
+
+                // Move the cursor to the "Yes" button
+                document.getElementById("yesButton").focus(); // Focus on the "Yes" button
+                
+                // Trigger heartbeat effect
+                const yesButton = document.getElementById("yesButton");
+                yesButton.classList.add("heartbeat"); // Add the heartbeat animation class
+            } else {
+                showFinalPage(); // Go to the "Yes" page
+            }
+        }
+
+        function showFinalPage() {
+            document.getElementById("mainContent").style.display = "none"; // Hide main content
+            document.getElementById("finalPage").style.display = "flex"; // Show final page
+            startConfetti(); // Trigger the confetti effect
+        }
+
+        // Confetti effect
+        function startConfetti() {
+            var duration = 15 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                // since particles fall down, start a bit higher than random
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+            }, 250);
+        }
+    </script>
+</head>
+<body>
+    <!-- Entry Page -->
+    <div id="entryPage">
+        <h1>Are you ready Saanch? 💌</h1>
+        <div>
+            <button onclick="showMainContent()">Yes</button>
+            <button onclick="alert('why do you hate me...chal yes daba')">No</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent">
+        <h1>yellooowww from Manani kapoori ❤️</h1>
+        <p>I have a question for you...</p>
+
+        <div class="glass">
+            <h1>Will You Be My Valentine? ❤️</h1>
+            <p>pls say yes pls say yes </p>
+            <button id="yesButton" onclick="redirectToYes(this)">Yes</button>
+            <button id="noButton" onmouseover="imageshow()" onmouseout="imagehide()" onclick="redirectToYes(this)">No</button>
+        </div>
+
+        <img id="surpriseImage" src="IMG_1411.jpeg" alt="Surprise Image">
+    </div>
+
+    <!-- Final Page -->
+    <div id="finalPage">
+        <h3> YES ????? WHATTT ???? OHHEMMMGEEEEE </h3>
+        <h1>YAYAYAYAYAYAYA ❤️</h1>
+    </div>
+</body>
+</html>
